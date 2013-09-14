@@ -1,0 +1,14 @@
+from DrawingWindowStandalone import *
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    window = DrawingWindow(100, 100, 0, 100, 0, 100, 'ok')
+    window.drawLineSeg(1,1,7,7)
+    while True:
+      continue
+  
