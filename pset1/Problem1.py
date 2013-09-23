@@ -23,7 +23,16 @@ class ProblemState():
 
         return possible_next_states
 
+class Node():
+      
+      def __init__(self, state, parent=None):
+          self.parent = parent
+          self.state = state
 
+      def getPossibleNextStates(self):
+          return self.state.getPossibleNextStates()
+
+      
 class SearchProblem:
     # The State includes the position of the robot, and the time step
     def __init__(self, obstacles, robot, start_state, goal_state):
@@ -98,7 +107,7 @@ def search(problem, priorityQueue, firstGoal = False):
             plan = pq.pop()
             node = plan[-1]
             if problem.isGoalState(node) and firstGoal:
-                print "Length of Path: " + str(len(plan[:-1]))
+                print "Length of Path: " + str(len(plan))
                 print "Nodes Expanded: " + str(problem.nodes_exp)
                 return plan
             
@@ -109,7 +118,7 @@ def search(problem, priorityQueue, firstGoal = False):
                     tempPlan = plan[:]
                     tempPlan.append(n)
                     pq.push(tempPlan)
-        print "Length of Path: " + str(len(plan[:-1]))
+        print "Length of Path: " + str(len(plan))
         print "Nodes Expanded: " + str(problem.nodes_exp)
         return plan
 
@@ -133,7 +142,7 @@ def aStar(problem, heuristic, alpha):
 if __name__ == "__main__":
     (window,bounds) = makeRoom(0,100,0,100)
 
-    head_points = ((0,0), (0,4),(3,4), (3,0))
+    head_points = ([0,0], [3,7], [5,0])
     head = Polygon(window, head_points)
     head.move(Point(10,10))
     '''
@@ -143,11 +152,19 @@ if __name__ == "__main__":
     '''
     robot = Robot([head])
 
-    vertices1 = ((0,0), (0,30), (60,15))
+    robot.extendedX.move(Point(5,15))
+    #robot.extendedX.draw()
+    robot.extendedY.move(Point(15,5))
+    #robot.extendedY.draw()
+
+
+    vertices1 = ([0,0], [0,30], [60,15])
     poly1 = Polygon(window, vertices1)
     poly1.move(Point(3,20))
     obs1 = Obstacle(poly1)
     obs1.draw()
+    obs1.getCSpace(robot)
+    obs1.CSpace.draw()
 
     vertices2 = ((0,0), (0,20),(60,20), (60,0))
     poly2 = Polygon(window, vertices2)
@@ -159,8 +176,8 @@ if __name__ == "__main__":
 
     problem = SearchProblem([obs1,obs2,bounds], robot, Point(5,5), Point(90,90))
 
-    #drawPath(window, breadthFirstSearch(problem))
-    #drawPath(window, depthFirstSearch(problem))
-    drawPath(window, aStar(problem, manhattanDistance,6))
+    #drawPath(window, breadthFirstSearch(problem),robot)
+    #drawPath(window, depthFirstSearch(problem),robot)
+    #drawPath(window, aStar(problem, manhattanDistance,1),robot)
     
     window.tk.mainloop()

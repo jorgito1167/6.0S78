@@ -80,9 +80,11 @@ def manhattanDistance(state, goal_state):
     return abs( p1.x - p2.x ) + abs( p1.y - p2.y )
 
 
-def drawPath(window, plan):
+def drawPath(window, plan, robot):
     for p in plan:
         window.drawPoint(p.robot_position.x, p.robot_position.y)
+        robot.setPosition(p.robot_position)
+        robot.draw()
 
 
 def makeRoom(min_x, max_x, min_y, max_y):
