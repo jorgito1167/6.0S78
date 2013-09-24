@@ -100,14 +100,25 @@ class Polygon:
         self.window = window
         self.points = points
         self.segments = []
-        self.vertices = []
-      
-        for t in points:
-            self.vertices.append(Point(t[0],t[1]))
-        for i in xrange(0,len(self.vertices)-1):
-            self.segments.append(Segment(window, copy.deepcopy(self.vertices[i]),copy.deepcopy(self.vertices[i+1])))
-        self.segments.append(Segment(window, copy.deepcopy(self.vertices[-1]), copy.deepcopy(self.vertices[0])))
+        self.initial_vertices = []
 
+        for t in points:
+            self.initial_vertices.append(Point(t[0],t[1]))
+        for i in xrange(0,len(self.initial_vertices)-1):
+            self.segments.append(Segment(window, copy.deepcopy(self.initial_vertices[i]),copy.deepcopy(self.initial_vertices[i+1])))
+        self.segments.append(Segment(window, copy.deepcopy(self.initial_vertices[-1]), copy.deepcopy(self.initial_vertices[0])))
+
+        self.position = self.segments[0].p1      
+
+    def vertices(self):
+        vertices =[]
+        for s in self.segments:
+            vertices.append(s.p1)
+        return vertices
+
+    def position(self):
+        return self.segments[0].p1
+      
     def intersect(self, otherPolygon):
         for s in otherPolygon.segments:
             for s1 in self.segments:
@@ -119,10 +130,24 @@ class Polygon:
         self.segments[0].move(position)
         for i in xrange(1, len(self.segments)):
             self.segments[i].move(self.segments[i-1].p2)
+
+    def moveDelta(self, delta_x, delta_y):
+        new_position = Point(self.position.x + delta_x, self.position.y + delta_y)
+        self.move(new_position)
     
     def draw(self):
         for seg in self.segments:
             seg.draw()
+    def __str__(self):
+        s = ""
+        for v in self.vertices():
+            s += str(v) + " "
+        return s
+    def copy(self):
+        points = []
+        for v in self.vertices():
+            points.append(v.toTuple())
+        return Polygon(self.window, points)
 
 class Robot:
 
@@ -151,9 +176,9 @@ class Robot:
     def findMinMax():
         #0 for x axis, 1 for y axis
         if axis == "x":
-            sortAxis = sorted(self.vertices, key = lambda vertex: vertex.x)
+            sortAxis = sorted(self.vertices(), key = lambda vertex: vertex.x)
         else:
-            sortAxis = sorted(self.vertices, key = lambda vertex: vertex.y)
+            sortAxis = sorted(self.vertices(), key = lambda vertex: vertex.y)
 
         return (sortAxis[0], sortAxis[-1])
 
@@ -161,22 +186,22 @@ class Robot:
     def extendPolygon(self, delta_x, delta_y):
 
         if delta_x == 1:
-            s = sorted(self.polygons[0].vertices, key = attrgetter('x'), reverse = True)
+            s = sorted(self.polygons[0].vertices(), key = attrgetter('x'), reverse = True)
             s1 = sorted(s, key=attrgetter('y'))
-            s2 = sorted(self.polygons[0].vertices, key = attrgetter('y', 'x'))
+            s2 = sorted(self.polygons[0].vertices(), key = attrgetter('y', 'x'))
 
 
         else:
-            s = sorted(self.polygons[0].vertices, key = attrgetter('y'), reverse = True)
+            s = sorted(self.polygons[0].vertices(), key = attrgetter('y'), reverse = True)
             s1 = sorted(s, key=attrgetter('x'))
-            s2 = sorted(self.polygons[0].vertices, key = attrgetter('x','y'))
+            s2 = sorted(self.polygons[0].vertices(), key = attrgetter('x','y'))
 
         (min_v, max_v) = (s1[0], s2[-1])
         #print min_v
         #print max_v
         
-        min_v_index = self.polygons[0].vertices.index(min_v)  
-        max_v_index = self.polygons[0].vertices.index(max_v)  
+        min_v_index = self.polygons[0].vertices().index(min_v)  
+        max_v_index = self.polygons[0].vertices().index(max_v)  
 
         if delta_x ==1:
             if min_v_index <= max_v_index:
@@ -229,31 +254,49 @@ class Obstacle:
     def draw(self):
         self.polygon.draw()
 
+    def findDelta(self,polygon):
+        print "Before: "
+        print self.polygon
+        print polygon
+        p1 = sorted(self.polygon.vertices(), key = attrgetter('x','y'), reverse = True)[0]
+        p2 = sorted(polygon.vertices(), key = attrgetter('x','y'), reverse = True)[0]
+        return (p1.x - p2.x , p1.y - p2.y)
+
+
     def getCSpace(self, robot):
         segments = [] 
-        for i in self.polygon.segments:
+        obs = self.polygon.copy()
+        rob = robot.polygons[0].copy()
+
+        for i in obs.segments:
             segments.append((copy.copy(i), i.normalAngle("left"),"o"))
 
-        for j in robot.polygons[0].segments:
+        for j in rob.segments:
             segments.append((copy.copy(j), j.normalAngle("right"),"r"))
 
         sorted_segments = sorted(segments, key= itemgetter(1))
         
-        for s in sorted_segments:
-            print s[0]
+        #for s in sorted_segments:
+        #    print s[0]
         for i in xrange(1, len(sorted_segments)):
             if sorted_segments[i][2] == "o":
                 sorted_segments[i][0].reverse()
             sorted_segments[i][0].move(sorted_segments[i-1][0].p2)
-        print "After: "
-        for s in sorted_segments:
-            print s[0]
+        #print "After: "
+        #for s in sorted_segments:
+        #    print s[0]
         vertices =[]
 
         for s in sorted_segments:
             vertices.append(s[0].p1.toTuple())
         
-        self.CSpace = Polygon(self.polygon.window, vertices)
+        tempPoly = Polygon(self.polygon.window, vertices)
+        delta = self.findDelta(tempPoly)
+        print delta
+        tempPoly.moveDelta(delta[0],delta[1])
+        print "After: "
+        print tempPoly
+        self.CSpace = tempPoly
 
         
 

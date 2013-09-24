@@ -152,20 +152,20 @@ if __name__ == "__main__":
     '''
     robot = Robot([head])
 
-    robot.extendedX.move(Point(5,15))
+    #robot.extendedX.move(Point(5,15))
     #robot.extendedX.draw()
-    robot.extendedY.move(Point(15,5))
+    #robot.extendedY.move(Point(15,5))
     #robot.extendedY.draw()
 
 
     vertices1 = ([0,0], [0,30], [60,15])
     poly1 = Polygon(window, vertices1)
-    poly1.move(Point(3,20))
+    poly1.move(Point(20,20))
     obs1 = Obstacle(poly1)
     obs1.draw()
     obs1.getCSpace(robot)
     obs1.CSpace.draw()
-
+    window.drawPoint(75,25)
     vertices2 = ((0,0), (0,20),(60,20), (60,0))
     poly2 = Polygon(window, vertices2)
     poly2.move(Point(40, 60))
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     obs2.draw()
 
     q = PriorityQueueWithFunction(manhattanDistance)
-
+    
     problem = SearchProblem([obs1,obs2,bounds], robot, Point(5,5), Point(90,90))
 
     #drawPath(window, breadthFirstSearch(problem),robot)
