@@ -9,9 +9,11 @@ from Polygon import *
 class Robot:
 
     def __init__(self, polygons):
-        self.initial_position = polygons[0].segments[0].p1
-        self.position = self.initial_position
         self.polygons = polygons
+        self.offsets = []
+        for p in polygons:
+            self.offsets.append(p.position() - polygons[0].position())
+            
         self.extendedX = self.extendPolygon(1,0) # different initial point
         self.extendedY = self.extendPolygon(0,1)
 
@@ -19,10 +21,12 @@ class Robot:
         for polygon in self.polygons:
             polygon.draw()
 
+    def position(self):
+        return self.polygons[0].position()
+
     def setPosition(self, position):
-        #fix to move all polygons to desired position
-        for polygon in self.polygons:
-            polygon.move(position)
+        for i in xrange(len(self.polygons)):
+            self.polygons[i].move(position + self.offsets[i])
 
     def intersect(self, polygon):
         for part in self.polygons:

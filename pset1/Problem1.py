@@ -9,8 +9,7 @@ class ProblemState():
     
     def __init__(self, robot_position, time_step):
         self.robot_position = robot_position
-        self.time_step = time_step
-
+        self.time_step = time_step 
     def getPossibleNextStates(self):
         position = [0,0,0,0]
         position[0] = Point(self.robot_position.x + 1, self.robot_position.y)
@@ -39,7 +38,7 @@ class SearchProblem:
         self.obstacles = obstacles
         self.robot = robot
         self.robot.setPosition(start_state)
-        self.robot.draw()
+        #self.robot.draw()
         self.start_state = ProblemState(start_state,0)
         self.goal_state = ProblemState(goal_state,0)
         window.drawPoint(start_state.x, start_state.y)
@@ -144,14 +143,17 @@ if __name__ == "__main__":
 
     head_points = ([0,0], [3,7], [5,0])
     head = Polygon(window, head_points)
-    head.move(Point(10,10))
-    '''
-    torso_points = ((0,0), (0,7),(5,7), (5,0))
-    torso = Polygon(window,torso_points)
-    torso.move(Point(1,1))
-    '''
-    robot = Robot([head])
+    head.move(Point(12,17))
 
+    torso_points = ((0,0), (0,7),(7,7), (7,0))
+    torso = Polygon(window,torso_points)
+    torso.move(Point(10,10))
+
+    robot = Robot([torso, head])
+    robot.draw()
+
+    robot.setPosition(Point(30,30))
+    robot.draw()
     #robot.extendedX.move(Point(5,15))
     #robot.extendedX.draw()
     #robot.extendedY.move(Point(15,5))
@@ -165,12 +167,14 @@ if __name__ == "__main__":
     obs1.draw()
     obs1.getCSpace(robot)
     obs1.CSpace.draw()
-    window.drawPoint(75,25)
+
     vertices2 = ((0,0), (0,20),(60,20), (60,0))
     poly2 = Polygon(window, vertices2)
     poly2.move(Point(40, 60))
     obs2 = Obstacle(poly2)
     obs2.draw()
+    obs2.getCSpace(robot)
+    obs2.CSpace.draw()
 
     q = PriorityQueueWithFunction(manhattanDistance)
     

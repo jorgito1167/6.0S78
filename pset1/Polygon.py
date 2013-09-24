@@ -18,8 +18,6 @@ class Polygon:
             self.segments.append(Segment(window, copy.deepcopy(self.initial_vertices[i]),copy.deepcopy(self.initial_vertices[i+1])))
         self.segments.append(Segment(window, copy.deepcopy(self.initial_vertices[-1]), copy.deepcopy(self.initial_vertices[0])))
 
-        self.position = self.segments[0].p1      
-
     def vertices(self):
         vertices =[]
         for s in self.segments:
@@ -27,7 +25,10 @@ class Polygon:
         return vertices
 
     def position(self):
-        return self.segments[0].p1
+        return self.segments[0].p1.copy()
+
+    def copy(self):
+        return Point(self.x,self.y)
       
     def intersect(self, otherPolygon):
         for s in otherPolygon.segments:
@@ -42,16 +43,17 @@ class Polygon:
             self.segments[i].move(self.segments[i-1].p2)
 
     def moveDelta(self, delta_x, delta_y):
-        new_position = Point(self.position.x + delta_x, self.position.y + delta_y)
+        new_position = Point(self.position().x + delta_x, self.position().y + delta_y)
         self.move(new_position)
     
     def draw(self):
         for seg in self.segments:
             seg.draw()
     def __str__(self):
-        s = ""
+        s = "Obstacle: "
         for v in self.vertices():
             s += str(v) + " "
+        s += " END"
         return s
     def copy(self):
         points = []

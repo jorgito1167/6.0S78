@@ -10,6 +10,9 @@ class Segment:
     def draw(self):
         self.window.drawLineSeg(self.p1.x, self.p1.y, self.p2.x, self.p2.y)
 
+    def copy(self):
+        return Segment(self.window, self.p1.copy(), self.p2.copy())
+
     def moveDelta(self, delta_x, delta_y):
         self.p1.move(delta_x, delta_y)
         self.p2.move(delta_x, delta_y)

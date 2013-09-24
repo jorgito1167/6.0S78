@@ -20,6 +20,15 @@ class Point:
             return True
         return False
 
+    def copy(self):
+        return Point(self.x,self.y)
+    
+    def __add__(self, otherPoint):
+        return Point(self.x + otherPoint.x, self.y + otherPoint.y)
+    
+    def __sub__(self, otherPoint):
+        return Point(self.x - otherPoint.x, self.y - otherPoint.y)
+
     def __str__(self):
         return "x: " + str(self.x) + " y: " + str(self.y)
 

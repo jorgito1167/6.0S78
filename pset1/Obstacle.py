@@ -32,25 +32,31 @@ class Obstacle:
     def getCSpace(self, robot):
         segments = [] 
         obs = self.polygon.copy()
+        
         rob = robot.polygons[0].copy()
 
         for i in obs.segments:
-            segments.append((copy.copy(i), i.normalAngle("left"),"o"))
+            segments.append((i.copy(), i.normalAngle("left"),"o"))
 
         for j in rob.segments:
-            segments.append((copy.copy(j), j.normalAngle("right"),"r"))
+            segments.append((j.copy(), j.normalAngle("right"),"r"))
 
         sorted_segments = sorted(segments, key= itemgetter(1))
-        
+            
+        if sorted_segments[0][2] == "o":
+            sorted_segments[0][0].reverse()
+
         for i in xrange(1, len(sorted_segments)):
             if sorted_segments[i][2] == "o":
+                print sorted_segments[i][0]
                 sorted_segments[i][0].reverse()
             sorted_segments[i][0].move(sorted_segments[i-1][0].p2)
+
         vertices =[]
 
         for s in sorted_segments:
             vertices.append(s[0].p1.toTuple())
-        
+
         tempPoly = Polygon(self.polygon.window, vertices)
         delta = self.findDelta(tempPoly)
         tempPoly.moveDelta(delta[0],delta[1])
