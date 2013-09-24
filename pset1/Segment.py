@@ -7,8 +7,8 @@ class Segment:
         self.p1 = p1
         self.p2 = p2
 
-    def draw(self):
-        self.window.drawLineSeg(self.p1.x, self.p1.y, self.p2.x, self.p2.y)
+    def draw(self, color = "black"):
+        self.window.drawLineSeg(self.p1.x, self.p1.y, self.p2.x, self.p2.y, color)
 
     def copy(self):
         return Segment(self.window, self.p1.copy(), self.p2.copy())

@@ -17,9 +17,9 @@ class Robot:
         self.extendedX = self.extendPolygon(1,0) # different initial point
         self.extendedY = self.extendPolygon(0,1)
 
-    def draw(self):
+    def draw(self, color= "black"):
         for polygon in self.polygons:
-            polygon.draw()
+            polygon.draw(color)
 
     def position(self):
         return self.polygons[0].position()

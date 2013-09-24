@@ -12,7 +12,7 @@ class Obstacle:
         self.position = self.initial_position
         self.velocity = velocity #tuple of (v_x, v_y)
         self.polygon = polygon
-        self.CSpace = None
+        self.CSpace = []
 
     def setPosition(self, time_step):
         self.position.x = self.initial_position.x + time_step* self.velocity[0]
@@ -20,20 +20,34 @@ class Obstacle:
 
         self.polygon.move(self.position)
 
-    def draw(self):
-        self.polygon.draw()
+    def draw(self, color = "black"):
+        self.polygon.draw(color)
+
+    def drawCSpace(self, color = "black"):
+        for p in self.CSpace:
+            p.draw(color)
 
     def findDelta(self,polygon):
         p1 = sorted(self.polygon.vertices(), key = attrgetter('x','y'), reverse = True)[0]
         p2 = sorted(polygon.vertices(), key = attrgetter('x','y'), reverse = True)[0]
         return (p1.x - p2.x , p1.y - p2.y)
 
-
     def getCSpace(self, robot):
+        for poly in robot.polygons:
+            self.CSpace.append(self.getPolyCSpace(poly))
+        
+        for i in xrange(len(self.CSpace)):
+            self.CSpace[i].moveDelta(-robot.offsets[i].x, -robot.offsets[i].y)
+
+        for v in self.CSpace[1].vertices():
+                robot.setPosition(v)
+                robot.draw()
+        
+    def getPolyCSpace(self, polygon):
         segments = [] 
         obs = self.polygon.copy()
         
-        rob = robot.polygons[0].copy()
+        rob = polygon.copy()
 
         for i in obs.segments:
             segments.append((i.copy(), i.normalAngle("left"),"o"))
@@ -60,6 +74,6 @@ class Obstacle:
         tempPoly = Polygon(self.polygon.window, vertices)
         delta = self.findDelta(tempPoly)
         tempPoly.moveDelta(delta[0],delta[1])
-        self.CSpace = tempPoly
+        return tempPoly
 
  

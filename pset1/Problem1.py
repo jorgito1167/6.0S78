@@ -150,10 +150,10 @@ if __name__ == "__main__":
     torso.move(Point(10,10))
 
     robot = Robot([torso, head])
-    robot.draw()
+    #robot.draw()
 
     robot.setPosition(Point(30,30))
-    robot.draw()
+    #robot.draw()
     #robot.extendedX.move(Point(5,15))
     #robot.extendedX.draw()
     #robot.extendedY.move(Point(15,5))
@@ -162,19 +162,19 @@ if __name__ == "__main__":
 
     vertices1 = ([0,0], [0,30], [60,15])
     poly1 = Polygon(window, vertices1)
-    poly1.move(Point(20,20))
+    poly1.move(Point(15,15))
     obs1 = Obstacle(poly1)
-    obs1.draw()
+    obs1.draw('blue')
     obs1.getCSpace(robot)
-    obs1.CSpace.draw()
+    obs1.drawCSpace('red')
 
     vertices2 = ((0,0), (0,20),(60,20), (60,0))
     poly2 = Polygon(window, vertices2)
-    poly2.move(Point(40, 60))
+    poly2.move(Point(30, 50))
     obs2 = Obstacle(poly2)
-    obs2.draw()
+    obs2.draw('blue')
     obs2.getCSpace(robot)
-    obs2.CSpace.draw()
+    obs2.drawCSpace('red')
 
     q = PriorityQueueWithFunction(manhattanDistance)
     

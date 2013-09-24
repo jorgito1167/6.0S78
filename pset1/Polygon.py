@@ -46,9 +46,9 @@ class Polygon:
         new_position = Point(self.position().x + delta_x, self.position().y + delta_y)
         self.move(new_position)
     
-    def draw(self):
+    def draw(self, color = "black"):
         for seg in self.segments:
-            seg.draw()
+            seg.draw(color)
     def __str__(self):
         s = "Obstacle: "
         for v in self.vertices():
