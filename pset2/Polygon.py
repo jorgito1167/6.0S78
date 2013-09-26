@@ -36,6 +36,19 @@ class Polygon:
                 if s.intersect(s1):
                     return True
         return False
+
+    def intersectSeg(self, segment):
+        for s in self.segments:
+            if s.intersect(segment):
+                return True
+        return False
+    
+    def pointInPoly(self,p):
+        for s in self.segments:
+            if s.crossProduct(p) == 0 or math.copysign(1.0, s.crossProduct(p)) == 1.0:
+                return False
+        return True
+
          
     def move(self, position):
         self.segments[0].move(position)
