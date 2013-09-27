@@ -22,6 +22,19 @@ class Segment:
         delta_y = p.y - self.p1.y
         self.p1.move(p.x,p.y)
         self.p2.moveDelta(delta_x, delta_y)
+    
+    def rotate(self, angle):
+        angle = math.radians(angle)
+        x = self.p2.x - self.p1.x
+        y = self.p2.y - self.p1.y
+        print "ok"
+        print x, y
+        new_x = math.cos(angle)*x - math.sin(angle)*y
+        new_y = math.sin(angle)*x + math.cos(angle)*y
+        print new_x, new_y
+        self.p2.x = new_x + self.p1.x
+        self.p2.y = new_y + self.p1.y
+ 
 
     def reverse(self):
         p1 = self.p1

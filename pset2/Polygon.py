@@ -55,6 +55,12 @@ class Polygon:
         for i in xrange(1, len(self.segments)):
             self.segments[i].move(self.segments[i-1].p2)
 
+    def rotate(self, angle):
+        self.segments[0].rotate(angle)
+        for i in xrange(1,len(self.segments)):
+            self.segments[i].move(self.segments[i-1].p2)
+            self.segments[i].rotate(angle)
+
     def moveDelta(self, delta_x, delta_y):
         new_position = Point(self.position().x + delta_x, self.position().y + delta_y)
         self.move(new_position)

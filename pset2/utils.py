@@ -43,7 +43,7 @@ class PriorityQueue:
 
     def push(self, item):
         self.queue.append(item)
-        self.priority.append(item.cost)
+        self.priority.append(item.priority)
 
     def pop(self):
         mini = self.findMin(self.priority)
@@ -71,7 +71,8 @@ class PriorityQueueWithFunction(PriorityQueue):
         PriorityQueue.__init__(self)     
 
     def push(self, item):
-        PriorityQueue.push(self, item, self.priorityFunction(item))
+        item.priority =  self.priorityFunction(item)
+        PriorityQueue.push(self, item)
 
 
 def manhattanDistance(state, goal_state):
@@ -90,7 +91,7 @@ def drawPath(window, plan, robot):
 
 
 def makeRoom(min_x, max_x, min_y, max_y):
-    window = DrawingWindow(1200, 700, min_x,max_x, min_y, max_y, 'test')
+    window = DrawingWindow(1000, 1000, min_x,max_x, min_y, max_y, 'test')
     outer_points = ((min_x+1,min_y+1), (min_x+1,max_y-1),(max_x-1,max_y-1), (max_x-1,min_y+1))
     
     b = Polygon(window, outer_points)

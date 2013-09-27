@@ -17,8 +17,10 @@ class GraphNode():
           if parent != None:
               self.cost = parent.cost + euclideanDistance(parent.state, node.state)
               self.length = parent.length + 1
+              self.priority = self.cost
           else:
               self.cost = 0
+              self.priority = 0
               self.length = 0
           self.children = node.children
       def draw(self, color= "black"):
@@ -36,18 +38,19 @@ def search(graph, priorityQueue, firstGoal = False):
     start = GraphNode(None, graph.start)
     pq.push(start)
     visited = set([])
+    counter = 0
     while not (pq.isEmpty()):
         node = pq.pop()
-    
         if graph.goal.state.equal(node.state) and firstGoal:
-            return node
+            return (node, counter)
         
         if not (node.state in visited):
+            counter += 1
             visited.update([node.state])
             
             for n in node.children:
                 pq.push(GraphNode(node,n))
-    return node
+    return (node, counter)
 
 def breadthFirstSearch(graph):
     q = Queue()
@@ -61,13 +64,13 @@ def uniformCostSearch(graph):
     pq = PriorityQueue()
     return search(graph, pq, True)
 
-def aStar(problem, heuristic, alpha):
+def aStar(graph, heuristic, alpha):
 
-    def priority_function(plan):
-        return alpha*heuristic(plan[-2],problem.goal_state) + plan[-1]
+    def priority_function(node):
+        return alpha*heuristic(node.state,graph.start.state) + node.cost
 
     q = PriorityQueueWithFunction(priority_function)
-    return search(problem, q, True)
+    return search(graph, q, True)
 
 if __name__ == "__main__":
     (window,bounds) = makeRoom(0,100,0,100)
@@ -79,28 +82,39 @@ if __name__ == "__main__":
     torso_points = ((0,0), (0,7),(7,7), (7,0))
     torso = Polygon(window,torso_points)
     torso.move(Point(10,10))
-
+    '''
+    s = Segment(window, Point (50, 50), Point(70, 50))
+    s.draw()
+    for n in [30, 60, 90]:
+        s.rotate(n)
+        print s.p2
+        s.draw()
+        s.rotate(-n)
+    pol = torso.copy()
+    pol.draw()
+    pol.rotate(60)
+    pol.draw()
+    '''
     robot = Robot([torso, head])
     #robot.draw()
-
-    robot.setPosition(Point(30,30))
+    
+    robot.setPosition(Point(3,3))
     #robot.draw()
     #robot.extendedX.move(Point(5,15))
     #robot.extendedX.draw()
     #robot.extendedY.move(Point(15,5))
     #robot.extendedY.draw()
 
-    '''
-    vertices1 = ([0,0], [0,20], [40,10])
+    
+    vertices1 = ([0,0], [0,15], [30,7])
     poly1 = Polygon(window, vertices1)
-    poly1.move(Point(40,30))
+    poly1.move(Point(10, 20))
     obs1 = Obstacle(poly1)
     #obs1.draw('blue')
     obs1.getCSpace(robot)
     obs1.drawCSpace('red')
-    '''
 
-    vertices2 = ((0,0), (0,10),(50,10), (50,0))
+    vertices2 = ((0,0), (0,10),(30,10), (30,0))
     poly2 = Polygon(window, vertices2)
     poly2.move(Point(10, 75))
     obs2 = Obstacle(poly2)
@@ -109,39 +123,66 @@ if __name__ == "__main__":
     obs2.drawCSpace('red')
 
     poly3 = poly2.copy()
-    poly3.move(Point(50, 30))
+    poly3.move(Point(30, 46))
     obs3 = Obstacle(poly3)
     #obs3.draw('blue')
     obs3.getCSpace(robot)
     obs3.drawCSpace('red')
 
-    visi = VisibilityGraph(window,Point(50,3), Point(30,90), [obs3,obs2], robot)
+    poly4 = poly3.copy()
+    poly4.move(Point(60, 15))
+    obs4 = Obstacle(poly4)
+    #obs4.draw('blue')
+    obs4.getCSpace(robot)
+    obs4.drawCSpace('red')
 
+    vertices5 = ((0,0), (10,10),(20,10), (30,0), (20,-10), (10, -10))
+    poly5 = Polygon(window, vertices5)
+    poly5.move(Point(70, 70))
+    obs5 = Obstacle(poly5)
+    #obs5.draw('blue')
+    obs5.getCSpace(robot)
+    obs5.drawCSpace('red')
+    
+    visi = VisibilityGraph(window,Point(3,3), Point(65,55), [obs1,obs2,obs3,obs4, obs5], robot)
+    #window.drawPoint(3,3,'black')
+    #window.drawPoint(65,55, 'orange')
     #visi.nodes[2].drawChildren()
-    b = breadthFirstSearch(visi)
-    d = depthFirstSearch(visi)
-    u = uniformCostSearch(visi)
+    (b, bcount) = breadthFirstSearch(visi)
+    (d, dcount) = depthFirstSearch(visi)
+    (u, ucount) = uniformCostSearch(visi)
+    (a, acount) = aStar(visi, euclideanDistance, 1)
+    (ap,apcount) = aStar(visi, euclideanDistance, 10000)
 
-    b.draw("blue")
-    d.draw("black")
-    u.draw("yellow")
+
+    #b.draw("blue")
+    #d.draw("black")
+    #u.draw("orange")
+    #a.draw("blue")
     print "BFS: "
     print b.cost
     print b.length
+    print bcount
     
     print "DFS: "
     print d.cost
     print d.length
+    print dcount
 
     print "UCS: "
     print u.cost
     print u.length
-    '''
-    #obs1.draw('blue')
-    #obs1.getCSpace(robot)
-    obs1.drawCSpace('red')
-    #obs2.draw('blue')
-    #obs2.getCSpace(robot)
-    obs2.drawCSpace('red')
-    '''
+    print ucount
+
+    print "A STAR: "
+    print a.cost
+    print a.length
+    print acount
+  
+    print "A STAR(non admissible): "
+    print ap.cost
+    print ap.length
+    print apcount
+
     window.tk.mainloop()
+    
