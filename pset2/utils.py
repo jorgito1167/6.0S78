@@ -41,9 +41,9 @@ class PriorityQueue:
         self.queue = []
         self.priority = []
 
-    def push(self, item, priority):
+    def push(self, item):
         self.queue.append(item)
-        self.priority.append(priority)
+        self.priority.append(item.cost)
 
     def pop(self):
         mini = self.findMin(self.priority)
@@ -79,6 +79,8 @@ def manhattanDistance(state, goal_state):
     p2 = goal_state.robot_position
     return abs( p1.x - p2.x ) + abs( p1.y - p2.y )
 
+def euclideanDistance(p1, p2):
+    return math.sqrt(math.pow(p2.x-p1.x, 2) + math.pow(p2.y - p1.y, 2))
 
 def drawPath(window, plan, robot):
     for p in plan:
@@ -93,5 +95,4 @@ def makeRoom(min_x, max_x, min_y, max_y):
     
     b = Polygon(window, outer_points)
     bounds = Obstacle(b)
-    bounds.draw()
     return (window,bounds)

@@ -9,11 +9,11 @@ class Node():
     def addChild(self, node):
         self.children.append(node)
 
-    def children(self):
-        return self.connectedNodes
-
     def drawChildren(self):
         for c in self.children:
             s = Segment(self.window, self.state.copy(), c.state.copy())
             s.draw("green")
+
+    def draw(self, color = "black"):
+        self.window.drawPoint(self.state.x, self.state.y,color)
       

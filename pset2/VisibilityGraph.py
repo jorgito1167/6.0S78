@@ -23,7 +23,7 @@ class VisibilityGraph():
                     if self.Map.isSegLegal(s):
                         self.segments.append(s)
                         node1.addChild(node2)
-                        #s.draw("black")
+                        s.draw("green")
     
     def getNodes(self):
         vertices = self.Map.vertices()
