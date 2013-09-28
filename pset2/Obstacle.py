@@ -15,6 +15,9 @@ class Obstacle:
         self.polygon = polygon
         self.CSpace = []
 
+    def copy(self):
+        return Obstacle(self.polygon)
+
     def setPosition(self, time_step):
         self.position.x = self.initial_position.x + time_step* self.velocity[0]
         self.position.y = self.initial_position.y + time_step* self.velocity[1]

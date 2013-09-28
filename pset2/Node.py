@@ -1,8 +1,8 @@
 from Segment import *
 class Node():
 
-    def __init__(self,window, state):
-        self.state = state
+    def __init__(self,window, position, angle):
+        self.state = (position,angle)
         self.children = []
         self.window = window
 
