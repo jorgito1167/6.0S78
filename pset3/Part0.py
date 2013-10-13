@@ -6,22 +6,19 @@ from geometry import *
 if __name__ == "__main__":
     window = DrawingWindow(700, 700, 0,100, 0, 100, 'test')
 
-    vertices = ((5,5), (5, 11), (20,11), (20,5))
-    link1 = Link(window,vertices,(8,8), (18,8))
-    link2 = Link(window, vertices,(8,8), (18,8))
-
-    link1.connect(link2)
-
-    link1.draw()
-    link2.draw()
-
-    link1.move(Point(30,30))
-    link1.draw()
-    link2.draw()
-
-    link1.rotate(45)
-    link1.draw()
-    link2.draw()
+    vertices = ((5,5), (5, 9), (20,9), (20,5))
+    link1 = Link(window,vertices,(8,7), (18,7))
+    robot = NLinkRobot(link1, 4,True)
+    robot.moveBase(Point(50,50))
+    robot.draw()
+    robot.setPosition((130,30,-60,20))
+    robot.draw()
+    robot.setPosition((10,10,-10,-20))
+    robot.draw()
+    robot.setPosition((-90,30,60,30))
+    robot.draw()
+    robot.setPosition((210,-30,20,90))
+    robot.draw()
 
 
 

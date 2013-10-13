@@ -15,8 +15,6 @@ class Link(Polygon):
         self.offsets[0].move(position)
         self.offsets[1].move(position)
         Polygon.move(self, self.offsets[0].p2)
-        for link in self.connected_links:
-            link.move(self.offsets[1].p2)
 
     def rotate(self, angle):
         self.offsets[0].rotate(angle)
@@ -25,14 +23,19 @@ class Link(Polygon):
         Polygon.rotate(self, angle)
         for link in self.connected_links:
             link.move(self.offsets[1].p2)
+            link.rotate(angle)
 
     def connect(self, link):
-        link.move(self.offsets[0].p1)
+        link.move(self.offsets[1].p2)
         self.connected_links.append(link)
 
     def updateJoint(self, position, angle):
+        pass
 
-    def draw(self):
+    def draw(self, color="black"):
         self.window.drawPoint(self.offsets[0].p1.x,self.offsets[0].p1.y)
         self.window.drawPoint(self.offsets[1].p2.x,self.offsets[1].p2.y)
-        Polygon.draw(self)
+        Polygon.draw(self,color)
+
+    def copy(self):
+        return Link(self.window, self.points,self.offsets[0].p1.toTuple(),self.offsets[1].p2.toTuple())

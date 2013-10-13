@@ -4,6 +4,7 @@ from Polygon import *
 from Robot import *
 from Obstacle import *       
 from Link import *
+from NLinkRobot import *
         
 
         

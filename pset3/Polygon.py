@@ -28,7 +28,7 @@ class Polygon:
         return self.segments[0].p1.copy()
 
     def copy(self):
-        return Point(self.x,self.y)
+        return Polygon(self.window, self.points) 
       
     def intersect(self, otherPolygon):
         for s in otherPolygon.segments:
