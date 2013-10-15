@@ -20,6 +20,8 @@ if __name__ == "__main__":
     robot.setPosition((210,-30,20,90))
     robot.draw()
 
+    TreeNode.window = window
+
 
 
     window.tk.mainloop()
