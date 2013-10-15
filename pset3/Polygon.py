@@ -35,6 +35,10 @@ class Polygon:
             for s1 in self.segments:
                 if s.intersect(s1):
                     return True
+        test_point = otherPolygon.vertices()[0]
+
+        if self.pointInPoly(test_point):
+            return True
         return False
 
     def intersectSeg(self, segment):
@@ -45,7 +49,7 @@ class Polygon:
     
     def pointInPoly(self,p):
         for s in self.segments:
-            if s.crossProduct(p) == 0 or math.copysign(1.0, s.crossProduct(p)) == 1.0:
+            if s.crossProduct(p) == 0 or math.copysign(1.0, s.crossProduct(p)) == -1.0:
                 return False
         return True
 

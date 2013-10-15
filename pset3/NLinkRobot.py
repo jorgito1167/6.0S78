@@ -34,7 +34,7 @@ class NLinkRobot():
         else:
             return NLinkRobot(self.polygons)
             
-    def setPosition(self, angles):
+    def setConfig(self, angles):
         self.reset() 
         for i in xrange(len(self.links)):
             self.links[i].rotate(angles[i]) 

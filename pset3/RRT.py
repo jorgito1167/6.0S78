@@ -24,7 +24,24 @@ class RRT():
         for i in xrange(len(self.dimensions)):
             config.append(random.uniform(self.dimensions[i][0],self.dimensions[i][1]))
         return config
-    
+    '''
+    find the nearest node
+    '''
+    def findNearNodeBidir(self, config, head):
+        q = Queue()
+        q.push(head)
+        current_min = self.metric(self.start.state,config) 
+        min_node = self.start
+        while not q.isEmpty():
+            node = q.pop()
+            d = self.metric(node.state,config)
+            for c in node.children:
+                q.push(c)
+            if d < current_min:
+                current_min = d
+                min_node = node
+        return min_node
+
     '''
     find the nearest node
     '''
@@ -54,8 +71,10 @@ class RRT():
         for i in xrange(len(oldConfig)):
             diff = newConfig[i] - oldConfig[i]
             newDimension = oldConfig[i] + math.copysign(self.dimensions[i][2], diff)
-            if abs(newDimension) < abs(newConfig[i]):
-                step.append(oldConfig[i] + self.dimensions[i][2])
+            new_diff = newConfig[i] - newDimension
+            if math.copysign(1.0, diff)== math.copysign(1.0,new_diff):
+            #if abs(newDimension) < abs(newConfig[i]):
+                step.append(newDimension)
             else:
                 step.append(oldConfig[i])
                 limits += 1
@@ -85,8 +104,8 @@ class RRT():
                 new = TreeNode(next_step,node)
                 self.nodes.append(new)
                 node.addChild(new)
-                print node
-                print new
+                #print node
+                #print new
                 node = new
 
             else:
@@ -100,8 +119,6 @@ class RRT():
 
     def draw(self):
         for n in self.nodes:
-            print "DRAW"
-            print n
             n.draw()
 
     def run(self):
@@ -109,17 +126,20 @@ class RRT():
         max_count = self.max_count
         while max_count > 0:
             max_count -=1
+            print max_count
             if goal_count == 10:
                 goal_count = 0
                 q_rand = self.goal
             else:
                 goal_count += 1
                 q_rand = self.randConfig()
-            self.window.drawOval((q_rand[0]-1, q_rand[1]+1),(q_rand[0]+1, q_rand[1] -1),'red')
+            #self.window.drawOval((q_rand[0]-1, q_rand[1]+1),(q_rand[0]+1, q_rand[1] -1),'red')
             q_near_node = self.findNearNode(q_rand)
-            print "Q_NEAR: "
-            print q_near_node
-            print q_rand
+            #print "Q_NEAR: "
+            #print q_near_node
+            #print q_rand
             (connected, node) = self.stepAndExpand(q_near_node, q_rand)
             if connected and goal_count ==0:
+                print "MAX COUNT: "
+                print max_count
                 return node
