@@ -3,14 +3,15 @@ from utils import *
 from TreeNode import *
 from CollisionBox import *
 
-class RRT():
+class BiRRT():
     window = None
     def __init__(self,start, goal, collision_box, dimensions,metric, node_step = 3, max_count= 10000):
-        self.goal = goal
+        self.goal = TreeNode(goal,None)
         self.start = TreeNode(start,None)
         self.collision_box = collision_box
         self.dimensions = dimensions
-        self.nodes = [self.start]
+        self.startTreeNodes = [self.start]
+        self.goalTreeNodes = [self.goal]
         self.node_step = node_step
         self.max_count = max_count
         self.metric = metric
@@ -24,29 +25,26 @@ class RRT():
         for i in xrange(len(self.dimensions)):
             config.append(random.uniform(self.dimensions[i][0],self.dimensions[i][1]))
         return config
-
     '''
     find the nearest node
     '''
-    def findNearNode(self, config):
+    def findNearNodeBiDir(self, config, root):
         q = Queue()
-        q.push(self.start)
-        current_min = self.metric(self.start.state,config) 
-        min_node = self.start
+        q.push(root)
+        current_min = self.metric(root.state ,config) 
+        min_node = root
         while not q.isEmpty():
             node = q.pop()
-            d = self.metric(node.state,config)
+            d = self.metric(node.state ,config)
             for c in node.children:
                 q.push(c)
             if d < current_min:
                 current_min = d
                 min_node = node
         return min_node
-                
-
 
     '''
-    Takes one step from the old configuration towards the a new configuration
+    steps the a given configuration towards the a new configuration
     '''
     def step(self, oldConfig, newConfig):
         step = []
@@ -71,7 +69,7 @@ class RRT():
     Once you have the nearest node, step to the new node and check for collisions.
     Then, expand the tree by adding nodes along the path.
     '''
-    def stepAndExpand(self, q_near, q_rand):
+    def stepAndExpand(self, q_near, q_rand, tree):
         next_step = q_near.state    #configuration
         node = q_near     #node
         node_step = self.node_step
@@ -85,7 +83,7 @@ class RRT():
                 node_step = self.node_step
 
                 new = TreeNode(next_step,node)
-                self.nodes.append(new)
+                tree.append(new)
                 node.addChild(new)
                 #print node
                 #print new
@@ -101,30 +99,31 @@ class RRT():
             return (False,node)
 
     def draw(self):
-        for n in self.nodes:
+        for n in self.startTreeNodes:
             n.draw()
+        for g in self.goalTreeNodes:
+            g.draw()
 
     def run(self):
-        goal_count = 0
         max_count = self.max_count
+        tree1 = self.startTreeNodes
+        tree2 = self.goalTreeNodes
+
         while max_count > 0:
             max_count -=1
             #print max_count
-            if goal_count == 10:
-                goal_count = 0
-                q_rand = self.goal
-            else:
-                goal_count += 1
-                q_rand = self.randConfig()
-            #self.window.drawOval((q_rand[0]-1, q_rand[1]+1),(q_rand[0]+1, q_rand[1] -1),'red')
-            q_near_node = self.findNearNode(q_rand)
-            #print "Q_NEAR: "
-            #print q_near_node
-            #print q_rand
-            (connected, node) = self.stepAndExpand(q_near_node, q_rand)
-            if connected and goal_count ==0:
-                print "Collision Checks: "
-                print self.collision_box.checks
-                print "MAX COUNT: "
-                print self.max_count - max_count
-                return node
+            q_rand = self.randConfig()
+            q_near_node = self.findNearNodeBiDir(q_rand,tree1[0])
+            (connected, q_stop) = self.stepAndExpand(q_near_node, q_rand,tree1)
+            if q_stop.state != q_near_node.state:
+                q_near_node2 = self.findNearNodeBiDir(q_stop.state, tree2[0])
+                (connected2, q_stop2) = self.stepAndExpand(q_near_node2, q_stop.state, tree2)
+                if connected2:
+                    print self.max_count - max_count
+                    print "done!"
+                    print self.collision_box.checks
+                    return (q_stop,q_stop2)               
+            if len(tree1) > len(tree2):
+                temptree = tree1
+                tree1 = tree2
+                tree2 = temptree
