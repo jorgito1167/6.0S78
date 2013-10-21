@@ -1,0 +1,24 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; HW7 blocks world + painting (stub)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (domain hw7)
+  (:requirements :strips)
+  (:predicates (Block ?obj)(Sprayer ?obj)(Color ?color) (Arm ?arm) (empty ?arm) (on-arm ?obj)(is-color ?color ?obj)
+	)
+
+  (:action pick-up 
+      :parameters (?obj ?arm)
+      :precondition (and (empty ?arm) (Sprayer ?obj))
+      :effect (and (not (empty ?arm)) (on-arm ?obj)))
+
+  (:action put-down 
+      :parameters (?arm ?obj)
+      :precondition (and (not (empty ?arm)) (on-arm ?obj))
+      :effect (and (empty ?arm) (not (on-arm ?obj)) ) )
+
+  (:action spray-paint 
+      :parameters (?sprayer ?block ?color ?arm)
+      :precondition (and (not (empty ?arm)) (Arm ?arm) (Sprayer ?sprayer) (on-arm ?sprayer) (is-color ?color ?block) (Block ?block) (Color ?color) ) 
+      :effect   (is-color ?c ?b) )
+ )

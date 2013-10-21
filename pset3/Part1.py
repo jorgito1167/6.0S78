@@ -71,12 +71,12 @@ def polyRobot():
     (node1,node2) = rrt.run()
     path = PathTrim(collision_box,dimensions, node1, node2)
     path.draw()
-    path.shortcut(30)
-    #path.draw('red')
-    #rrt.draw()
+    path.shortcut(100)
+    path.draw('red')
+    rrt.draw()
     #drawPolyRobotBiPath(node1 , node2)
     
-    #window.tk.mainloop()
+    window.tk.mainloop()
 
 
 def nLinkRobot():
@@ -162,10 +162,7 @@ def drawPolyRobotBiPath(node1, node2):
 
 
 if __name__ == "__main__":
-    for i in xrange(10):
-        print "poly \n"
-        polyRobot()
-        print "\n" 
+    polyRobot()
     '''
     for n in xrange(10):
         print "n link \n"
