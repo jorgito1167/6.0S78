@@ -2,7 +2,7 @@
 
 (define (domain hw7)
   (:requirements :strips)
-  (:predicates (Block ?obj)(Sprayer ?obj)(Color ?color)  (on-table ?obj) (arm-empty) (on-arm ?obj)(is-color ?color ?obj) (Can ?can) (Brush ?brush) (clean ?brush) (Bucket ?bucket) (clear ?obj) (on ?obj1 ?obj2)  
+  (:predicates (Block ?obj)(Sprayer ?obj)(Color ?color)  (on-table ?obj) (arm-empty) (on-arm ?obj)(is-color ?color ?obj) (Can ?can) (Brush ?brush) (clean ?brush) (Bucket ?bucket) (clear ?obj) (on ?obj1 ?obj2)  (has-color ?color ?obj)
 	)
 
   (:action pick-up 
@@ -17,29 +17,29 @@
 
   (:action spray-paint 
       :parameters (?obj ?sprayer ?color)
-      :precondition (and (Sprayer ?sprayer) (on-arm ?sprayer) (is-color ?color ?sprayer) (Color ?color) ) 
+      :precondition (and (Sprayer ?sprayer) (on-arm ?sprayer) (has-color ?color ?sprayer) (Color ?color) (on-table ?obj) ) 
       :effect   (is-color ?color ?obj) )
 
   (:action load-brush 
       :parameters (?brush ?can ?color)
-      :precondition (and (Brush ?brush) (Can ?can) (Color ?color) (clean ?brush) (on-arm ?brush) (clear ?can) (is-color ?color ?can))
-      :effect (and (not (clean ?brush)) (is-color ?color ?brush) ) )
+      :precondition (and (Brush ?brush) (Can ?can) (Color ?color) (clean ?brush) (on-arm ?brush) (clear ?can) (has-color ?color ?can))
+      :effect (and (not (clean ?brush)) (has-color ?color ?brush) ) )
 
   (:action brush-paint 
       :parameters (?obj ?color ?brush)
       :precondition (and (Color ?color) (Brush ?brush) (on-arm ?brush)
-                    (is-color ?color ?brush) (clear ?obj) (on-table ?obj))
+                    (has-color ?color ?brush) (clear ?obj) (on-table ?obj))
       :effect (is-color ?color ?obj) )
 
   (:action wash-brush 
       :parameters (?brush ?color ?bucket)
-      :precondition (and (Brush ?brush) (Color ?color) (Bucket ?bucket) (on-arm ?brush) (clear ?bucket) (is-color ?color ?brush) )
-      :effect (and (not (is-color ?color ?brush)) (clean ?brush) ))
+      :precondition (and (Brush ?brush) (Color ?color) (Bucket ?bucket) (on-arm ?brush) (clear ?bucket) (has-color ?color ?brush) )
+      :effect (and (not (has-color ?color ?brush)) (clean ?brush) ))
 
   (:action unstack 
       :parameters (?obj1 ?obj2)
       :precondition (and (arm-empty) (on ?obj1 ?obj2) (clear ?obj1))
-      :effect (and (not (arm-empty)) (not (on ?obj1 ?obj2)) (not(clear ?obj1)) (on-arm ?obj1) (clear ?obj2 ))
+      :effect (and (not (arm-empty)) (not (on ?obj1 ?obj2)) (not(clear ?obj1)) (on-arm ?obj1) (clear ?obj2 )))
 
   (:action stack 
       :parameters (?obj1 ?obj2)
