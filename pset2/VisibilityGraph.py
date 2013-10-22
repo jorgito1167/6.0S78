@@ -13,10 +13,10 @@ class VisibilityGraph():
         self.new_nodes = {}
         self.start = Node(window, start, 0)
         self.goal = Node(window, goal, 0)
-        for h in xrange(-60,0):
+        for h in xrange(1):
             self.nodes[h] = self.getNodes(h)
 
-        for a in xrange(-60, 0):
+        for a in xrange(1):
             nodes = self.nodes[a]
             for i in xrange(len(nodes)):
                 node1 = nodes[i]
@@ -29,6 +29,7 @@ class VisibilityGraph():
                             node1.addChild(node2)
                             #s.draw("green")
                 #if can connect to different layer do connect
+                '''
                 for t in xrange(-60,0):
                     if self.Map.pointInCSpace(t,node1.state[0]):
                         new_node = Node(self.window,node1.state[0], t)
@@ -39,8 +40,9 @@ class VisibilityGraph():
                             self.new_nodes[t].append(new_node)
                     else:
                         break
-
             print "done: " + str(a)
+            '''
+        '''
         for b in self.new_nodes.keys():
             nodes = self.nodes[b]
             print len(self.new_nodes[b])
@@ -54,6 +56,8 @@ class VisibilityGraph():
                             c.addChild(node2)   
             print "second round: " + str(b)
         print "Done with Visibility Graph"
+        '''
+        
     
     def getNodes(self,i):
         vertices = self.Map.vertices(i)

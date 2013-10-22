@@ -107,10 +107,10 @@ if __name__ == "__main__":
     #robot.extendedX.draw()
     #robot.extendedY.move(Point(15,5))
     #robot.extendedY.draw()
-    '''
+
     vertices1 = ([0,0], [0,15], [30,7])
     poly1 = Polygon(window, vertices1)
-    poly1.move(Point(10, 20))
+    poly1.move(Point(25, 30))
     obs1 = Obstacle(poly1)
     #obs1.draw('blue')
     obs1.getCSpace(robot)
@@ -122,22 +122,22 @@ if __name__ == "__main__":
     obs2 = Obstacle(poly2)
     #obs2.draw('blue')
     obs2.getCSpace(robot)
-    obs2.drawCSpace('red')
+    #obs2.drawCSpace('red')
 
     poly3 = poly2.copy()
-    poly3.move(Point(30, 46))
+    poly3.move(Point(60, 46))
     obs3 = Obstacle(poly3)
     #obs3.draw('blue')
     obs3.getCSpace(robot)
-    obs3.drawCSpace('red')
+    #obs3.drawCSpace('red')
 
     poly4 = poly3.copy()
-    poly4.move(Point(60, 15))
+    poly4.move(Point(50, 60))
     obs4 = Obstacle(poly4)
     #obs4.draw('blue')
     obs4.getCSpace(robot)
     obs4.drawCSpace('red')
-
+    '''
     vertices5 = ((0,0), (10,10),(20,10), (30,0), (20,-10), (10, -10))
     poly5 = Polygon(window, vertices5)
     poly5.move(Point(70, 70))
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     #obs5.draw('blue')
     obs5.getCSpace(robot)
     obs5.drawCSpace('red')
-    '''
+
     vertices1 = ([0,0], [0,15], [40,15], [40,0])
     poly1 = Polygon(window, vertices1)
     poly1.move(Point(15, 50))
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     obs2.getCSpace(robot)
     obs2.drawCSpace('red')
     '''
-    visi = VisibilityGraph(window,Point(80,80), Point(50,5), [obs1,obs2], robot)
+    visi = VisibilityGraph(window,Point(3,3), Point(85,85), [obs1,obs4], robot)
     #window.drawPoint(3,3,'black')
     #window.drawPoint(65,55, 'orange')
     #visi.nodes[2].drawChildren()
@@ -177,9 +177,9 @@ if __name__ == "__main__":
 
 
 
-    b.draw("blue")
-    d.draw("black")
-    u.draw("orange")
+    #b.draw("blue")
+    #d.draw("black")
+    #u.draw("orange")
     a.draw("yellow")
     print "BFS: "
     print b.cost
@@ -205,6 +205,5 @@ if __name__ == "__main__":
     print ap.cost
     print ap.length
     print apcount
-    '''
     window.tk.mainloop()
     
