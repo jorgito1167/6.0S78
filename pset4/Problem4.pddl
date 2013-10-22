@@ -1,0 +1,27 @@
+
+(define (problem 3)
+  (:domain hw7)
+  (:objects A B C bucket1 brush1 sprayer1 can2 can3 Red Blue Yellow Green )
+  (:init (arm-empty)
+    (Block A) (on-table A) 
+    (Block B) (on B A)
+    (Block C) (on C B) (clear C)
+
+    (Sprayer sprayer1) (on-table sprayer1) (clear sprayer1) (has-color Red sprayer1)
+
+    (Can can2) (on-table can2) (clear can2)(has-color Green can2) 
+    (Can can3) (on-table can3) (clear can3)(has-color Blue can3) 
+
+    (Brush brush1) (clear brush1) (clean brush1) (on-table brush1)
+    (Bucket bucket1) (clear bucket1)
+    (Color Red) (Color Blue) (Color Green) (Color Yellow)
+      )
+  (:goal (and (arm-empty)
+              (is-color Red A)
+              (is-color Green B)
+              (is-color Blue C)
+              (on A B)
+              (on B C)
+              (on-table C)
+              (clean brush1)
+           )))
