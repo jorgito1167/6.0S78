@@ -84,7 +84,7 @@ class PlanProblem:
         ##########################
         # Your code here
         ##########################
-        return literalsNotInGoal(state, self.goalAssertions)
+        return literalsNotInGoal(state,self.goalAssertions)
 
     def findPlan(self, maxNodes = 10000):
         # Call a search function

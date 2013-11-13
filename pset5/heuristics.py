@@ -14,7 +14,7 @@ class GraphNode():
               self.length = 0
 
 
-def search(initialState, goalTest, stateActions, succesors, priorityQueue, maxNodes):
+def search(initialState, goalTest, stateActions, successors, priorityQueue, maxNodes):
     pq = priorityQueue
     start = GraphNode(None, initialState, 0, None)
     pq.push(start)
@@ -31,17 +31,17 @@ def search(initialState, goalTest, stateActions, succesors, priorityQueue, maxNo
             visited.update([node.state])
             
             for a in stateActions(node.state):
-                newStateCost =  succesors(node.state,a)
+                newStateCost =  successors(node.state,a)
                 if not (newStateCost[0] in visited):
                     pq.push(GraphNode(node,newStateCost[0],newStateCost[1],a))
 
-def aStar(initialState, goalTest, stateActions, succesors, heuristic = None, maxNodes =1000):
+def aStar(initialState, goalTest, stateActions, successors, heuristic = None, maxNodes =10000):
     alpha = 1
     def priority_function(node):
         return alpha*heuristic(node.state) + 0*node.cost
 
     q = PriorityQueueWithFunction(priority_function)
-    return search(initialState, goalTest, stateActions, succesors, q, maxNodes)
+    return search(initialState, goalTest, stateActions, successors, q, maxNodes)
 
 def extractPlan(node):
     plan = []
