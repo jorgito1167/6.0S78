@@ -1,16 +1,12 @@
+from planner import *
 
-ACTS1 = [GrabFromTable(args) for args in combinations([ARMS,BLOCKS])] +\
-        [GrabFromTable(args) for args in combinations([ARMS,BRUSHES])] +\
-        [GrabFromTable(args) for args in combinations([ARMS,SPRAYERS])] +\
-        [GrabBlockFromBlock(args) for args in combinations([ARMS,BLOCKS,BLOCKS])] + \
-        [PutOnTable(args) for args in combinations([ARMS,BLOCKS])]+\
-        [PutOnTable(args) for args in combinations([ARMS,BRUSHES])]+\
-        [PutOnTable(args) for args in combinations([ARMS,SPRAYERS])]+\
-        [SprayPaint(args) for args in combinations([BLOCKS, SPRAYERS, COLORS, ARMS])] +\
-        [LoadBrush(args) for args in combinations([BRUSHES, CANS, COLORS, ARMS])] +\
-        [BrushPaint(args) for args in combinations([BLOCKS, COLORS, BRUSHES, ARMS])] +\
-        [WashBrush(args) for args in combinations([BRUSHES,COLORS,BUCKETS,ARMS])]+\
-        [PutBlockOnBlock(args) for args in combinations([ARMS, BLOCKS,BLOCKS])]
+BLOCKS = ['blockA', 'blockB']
+ARMS = ['arm1']
+COLORS = ['red','blue']
+CANS = ['can1']
+BRUSHES = ['brush1']
+SPRAYERS = ['sprayer1']
+BUCKETS = ['bucket1']
 
 INITIAL1 = State([('on-table', 'blockA'), ('on','blockB','blockA'), ('clear', 'blockB')]+\
                  [('free','arm1')]+\

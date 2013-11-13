@@ -9,10 +9,10 @@
 
     (Sprayer sprayer1) (on-table sprayer1) (has-color Red sprayer1) (on can2 sprayer1)
 
-    (Can can2) (on-table can2) (has-color Green can2) (on can3 can2)
+    (Can can2)  (has-color Green can2) (on can3 can2)
     (Can can3) (on-table can3) (has-color Blue can3) (on bucket1 can3)
 
-    (Brush brush1) (clear brush1) (clean brush1) (on-table brush1)
+    (Brush brush1) (clear brush1) (clean brush1)
     (Bucket bucket1) (on brush1 bucket1)
     (Color Red) (Color Blue) (Color Green) (Color Yellow)
       )

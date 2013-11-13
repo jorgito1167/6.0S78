@@ -7,7 +7,7 @@ ground assertions.
 
 import pdb
 from heuristics import *
-
+import time
 verbose = False
 
 class State:
@@ -88,17 +88,24 @@ class PlanProblem:
 
     def findPlan(self, maxNodes = 10000):
         # Call a search function
+        initial_time = time.time()
         result = aStar(self.initialState,
                         self.goalTest,
                         self.stateActions,
                         self.planSuccessor,
                         heuristic = self.planHeuristic,
                         maxNodes = maxNodes)
+        final_time = time.time()
+        delta = final_time - initial_time
         if result[0]:
             (plan, cost) = result
             print 'Found plan with cost', cost
+            count = 1
             for (action, state) in plan:
-                if action: print action
+                if action: 
+                    print str(count)+ ". " + str(action)
+                    count +=1
+            print round(delta,2)
             return plan
         else:
             print 'Failed to find a plan'

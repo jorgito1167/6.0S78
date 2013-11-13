@@ -1,4 +1,5 @@
 from planner import *
+from problem5 import *
 class GrabFromTable(Action):
     actionName = 'grab from table'
     def resultStateAndCost(self, state, noDel = False):
@@ -9,12 +10,12 @@ class GrabFromTable(Action):
                                     [('free', arm), ('clear', block), ('on-table', block)],
                                     noDel),1)
 
-class GrabBlockFromBlock(Action):
-    actionName = 'grab from block'
+class GrabFromObj(Action):
+    actionName = 'grab from object'
     def resultStateAndCost(self, state, noDel = False):
         (arm, block1, block2) = self.args
         if state.check([('free', arm), ('clear', block1), ('on', block1, block2)]):
-            return (state.addDelete([('on', block, arm), ('clear', block2)],
+            return (state.addDelete([('on', block1, arm), ('clear', block2)],
                                     # Deletes
                                     [('free', arm), ('clear', block1), ('on', block1, block2)],
                                     noDel),1)
@@ -28,8 +29,8 @@ class PutOnTable(Action):
                                     [('on', block,arm)],
                                     noDel),1)
 
-class PutBlockOnBlock(Action):
-    actionName = 'put on block'
+class Stack(Action):
+    actionName = 'stack'
     def resultStateAndCost(self, state, noDel = False):
         (arm, block1, block2) = self.args
         if state.check([('on', block1, arm), ('clear', block2)]):
@@ -84,43 +85,51 @@ class WashBrush(Action):
                                     noDel),1)
 
 
-BLOCKS = ['blockA', 'blockB']
-ARMS = ['arm1']
-COLORS = ['red','blue']
-CANS = ['can1']
-BRUSHES = ['brush1']
-SPRAYERS = ['sprayer1']
-BUCKETS = ['bucket1']
 
-INITIAL0 = State([('clear', block) for block in BLOCKS] +\
-                [('on-table', block) for block in BLOCKS] +\
-                [('free', arm) for arm in ARMS])
-
-GOAL0 = [('on-table', 'blockA'),('on', 'blockC', 'blockB'), ('on', 'blockB', 'blockA'), \
-         ('on-table', 'blockE'), ('on', 'blockD', 'blockE')]
-
-ACTS1 = [GrabFromTable(args) for args in combinations([ARMS,BLOCKS])] +\
+ACTS = [GrabFromTable(args) for args in combinations([ARMS,BLOCKS])] +\
         [GrabFromTable(args) for args in combinations([ARMS,BRUSHES])] +\
         [GrabFromTable(args) for args in combinations([ARMS,SPRAYERS])] +\
-        [GrabBlockFromBlock(args) for args in combinations([ARMS,BLOCKS,BLOCKS])] + \
+        [GrabFromTable(args) for args in combinations([ARMS,CANS])] +\
+        [GrabFromTable(args) for args in combinations([ARMS,BUCKETS])] +\
+        [GrabFromObj(args) for args in combinations([ARMS,BLOCKS,BLOCKS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,CANS,BLOCKS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BLOCKS,CANS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BRUSHES,BLOCKS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BLOCKS,BRUSHES])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BLOCKS,SPRAYERS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,SPRAYERS,BLOCKS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BUCKETS,BLOCKS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BLOCKS,BUCKETS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,CANS,CANS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,CANS,BRUSHES])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BRUSHES,CANS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,CANS,SPRAYERS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,SPRAYERS,CANS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,CANS,BUCKETS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BUCKETS,CANS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BRUSHES,BRUSHES])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BRUSHES,SPRAYERS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,SPRAYERS,BRUSHES])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BRUSHES,BUCKETS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BUCKETS,BRUSHES])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,SPRAYERS,SPRAYERS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,SPRAYERS,BUCKETS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BUCKETS,SPRAYERS])] + \
+        [GrabFromObj(args) for args in combinations([ARMS,BUCKETS,BUCKETS])] + \
         [PutOnTable(args) for args in combinations([ARMS,BLOCKS])]+\
         [PutOnTable(args) for args in combinations([ARMS,BRUSHES])]+\
         [PutOnTable(args) for args in combinations([ARMS,SPRAYERS])]+\
+        [PutOnTable(args) for args in combinations([ARMS,CANS])]+\
+        [PutOnTable(args) for args in combinations([ARMS,BUCKETS])]+\
         [SprayPaint(args) for args in combinations([BLOCKS, SPRAYERS, COLORS, ARMS])] +\
         [LoadBrush(args) for args in combinations([BRUSHES, CANS, COLORS, ARMS])] +\
         [BrushPaint(args) for args in combinations([BLOCKS, COLORS, BRUSHES, ARMS])] +\
         [WashBrush(args) for args in combinations([BRUSHES,COLORS,BUCKETS,ARMS])]+\
-        [PutBlockOnBlock(args) for args in combinations([ARMS, BLOCKS,BLOCKS])]
+        [Stack(args) for args in combinations([ARMS, BLOCKS,BLOCKS])]+\
+        [Stack(args) for args in combinations([ARMS, BRUSHES,CANS])]
 
-INITIAL1 = State([('on-table', 'blockA'), ('on','blockB','blockA'), ('clear', 'blockB')]+\
-                 [('free','arm1')]+\
-                 [('clear','sprayer1'), ('on-table','sprayer1'),('has-color','blue','sprayer1')]+\
-                 [('clear','can1'),('has-color', 'red', 'can1')]+\
-                 [('clear','brush1'),('clean', 'brush1'), ('on-table', 'brush1')]+\
-                 [('clear','bucket1')])
 
-GOAL1 = [('free','arm1'),('is-color','blue', 'blockB'),('is-color','red','blockA'),('clean','brush1')]
 
-block_world = PlanProblem(INITIAL1, GOAL1, ACTS1)
-block_world.findPlan(100000)
+block_world = PlanProblem(INITIAL5, GOAL5, ACTS)
+block_world.findPlan(10000000)
 
