@@ -38,7 +38,7 @@ def search(initialState, goalTest, stateActions, succesors, priorityQueue, maxNo
 def aStar(initialState, goalTest, stateActions, succesors, heuristic = None, maxNodes =1000):
     alpha = 1
     def priority_function(node):
-        return alpha*heuristic(node.state) + node.cost
+        return alpha*heuristic(node.state) + 0*node.cost
 
     q = PriorityQueueWithFunction(priority_function)
     return search(initialState, goalTest, stateActions, succesors, q, maxNodes)
