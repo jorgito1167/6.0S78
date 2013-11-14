@@ -7,7 +7,7 @@ BRUSHES = ['brush1']
 SPRAYERS = ['sprayer1','sprayer2','sprayer3']
 BUCKETS = ['bucket1']
 
-INITIAL3 = State([('on-table', block) for block in BLOCKS]+\
+INITIAL = State([('on-table', block) for block in BLOCKS]+\
                  [('clear',block) for block in BLOCKS]+\
                  [('free','arm1')]+\
                  [('clear',sprayer) for sprayer in SPRAYERS]+\
@@ -19,6 +19,6 @@ INITIAL3 = State([('on-table', block) for block in BLOCKS]+\
                  [('clear','brush1'),('clean', 'brush1'), ('on-table', 'brush1')]+\
                  [('clear','bucket1')])
 
-GOAL3 = [('free','arm1'),('is-color','green','blockC'),('is-color','blue', 'blockB'),('is-color','red','blockA'),('clean','brush1')]
+GOAL = [('free','arm1'),('is-color','green','blockC'),('is-color','blue', 'blockB'),('is-color','red','blockA'),('clean','brush1')]
 
 

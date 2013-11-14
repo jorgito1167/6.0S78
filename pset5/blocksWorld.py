@@ -1,4 +1,5 @@
 from planner import *
+from graphplan import *
 from problem5 import *
 class GrabFromTable(Action):
     actionName = 'grab from table'
@@ -9,6 +10,14 @@ class GrabFromTable(Action):
                                     # Deletes
                                     [('free', arm), ('clear', block), ('on-table', block)],
                                     noDel),1)
+    def preconditions(self):
+        (arm,block) = self.args
+        return [('free', arm), ('clear', block), ('on-table', block)]
+
+    def posEffects(self):
+        (arm,block) = self.args
+        return [('on', block, arm)]
+
 
 class GrabFromObj(Action):
     actionName = 'grab from object'
@@ -19,6 +28,14 @@ class GrabFromObj(Action):
                                     # Deletes
                                     [('free', arm), ('clear', block1), ('on', block1, block2)],
                                     noDel),1)
+    def preconditions(self):
+        (arm,block1,block2) = self.args
+        return [('free', arm), ('clear', block1), ('on', block1, block2)]
+
+    def posEffects(self):
+        (arm,block1,block2) = self.args
+        return [('on', block1, arm), ('clear', block2)]
+        
 class PutOnTable(Action):
     actionName = 'put on table'
     def resultStateAndCost(self, state, noDel = False):
@@ -28,6 +45,12 @@ class PutOnTable(Action):
                                     # Deletes
                                     [('on', block,arm)],
                                     noDel),1)
+    def preconditions(self):
+        (arm,block) = self.args
+        return [('on', block, arm)]
+    def posEffects(self):
+        (arm,block) = self.args
+        return [('free', arm), ('on-table', block), ('clear', block)]
 
 class Stack(Action):
     actionName = 'stack'
@@ -37,7 +60,13 @@ class Stack(Action):
             return (state.addDelete([('on', block1, block2), ('clear', block1), ('free', arm)],
                                     # Deletes
                                     [('clear', block2), ('on', block1,arm)],
-                                    noDel),1)
+                                      noDel),1)
+    def preconditions(self):
+        (arm,block1,block2) = self.args
+        return [('on', block1, arm), ('clear', block2)]
+    def posEffects(self):
+        (arm,block1,block2) = self.args
+        return [('on', block1, block2), ('clear', block1), ('free', arm)]
 
 class SprayPaint(Action):
     actionName = 'spray paint'
@@ -50,6 +79,12 @@ class SprayPaint(Action):
                                     # Deletes
                                     [],
                                     noDel),1)
+    def preconditions(self):
+        (block, sprayer, color, arm) = self.args
+        return [('has-color', color, sprayer),('on', sprayer, arm),('on-table', block), ('clear', block)]   
+    def posEffects(self):
+        (block, sprayer, color, arm) = self.args
+        return [('is-color', color, block)]
 
 class LoadBrush(Action):
     actionName = 'load brush'
@@ -62,6 +97,13 @@ class LoadBrush(Action):
                                     # Deletes
                                     [('clean',brush)],
                                     noDel),1)
+    def preconditions(self):
+        (brush, can, color, arm) = self.args
+        return [('clean', brush), ('has-color', color, can),('on', brush, arm), ('clear', can)]
+
+    def posEffects(self):
+        (brush, can, color, arm) = self.args
+        return [('has-color', color, brush)] 
 
 class BrushPaint(Action):
     actionName = 'brush paint'
@@ -72,6 +114,13 @@ class BrushPaint(Action):
                                     # Deletes
                                     [],
                                     noDel),1)
+    def preconditions(self):
+        (block, color, brush, arm) = self.args
+        return [('has-color', color, brush),('on', brush, arm), ('on-table', block), ('clear', block)]
+    def posEffects(self):
+        (block, color, brush, arm) = self.args
+        return [('is-color', color, block)]
+
 
 class WashBrush(Action):
     actionName = 'wash brush'
@@ -83,6 +132,13 @@ class WashBrush(Action):
                                     # Deletes
                                     [('has-color', color, brush)],
                                     noDel),1)
+
+    def preconditions(self):
+        (brush, color, bucket, arm) = self.args
+        return [('has-color', color, brush),('on', brush, arm),('clear', bucket)]
+    def posEffects(self):
+        (brush, color, bucket, arm) = self.args
+        return [('clean',brush)]
 
 
 
@@ -130,6 +186,9 @@ ACTS = [GrabFromTable(args) for args in combinations([ARMS,BLOCKS])] +\
 
 
 
-block_world = PlanProblem(INITIAL5, GOAL5, ACTS)
+block_world = PlanProblem(INITIAL, GOAL, ACTS)
 block_world.findPlan(10000000)
+g = RelaxGraphPlan(INITIAL, GOAL, ACTS)
+print g
+g.buildPlan()
 
